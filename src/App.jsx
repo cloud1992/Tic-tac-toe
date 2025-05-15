@@ -90,15 +90,22 @@ function App() {
   }
 
   const ResetGame = () => {
-    const className = winner !== null ? '' : 'reset';
+    if (winner) {
     return (
-      <button className={className} onClick={() => {
-        setBoard(Array(9).fill(null));
-        setTurn(TURNS.X);
-        setWinner(null);
-      }
-      }>Reset</button>
+      <section className='winner'>
+        <div className='text'>
+          <h2>{winner} has won!</h2>
+          <button onClick={() => {
+          setBoard(Array(9).fill(null));
+          setTurn(TURNS.X);
+          setWinner(null);
+          }}>
+          Reset</button>
+        </div>
+      </section>  
+        
     )
+  }
   }
   
   return (
