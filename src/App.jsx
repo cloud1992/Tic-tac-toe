@@ -100,36 +100,49 @@ function App() {
           setTurn(TURNS.X);
           setWinner(null);
           }}>
-          Reset</button>
+          Reset</button> 
         </div>
       </section>  
         
     )
   }
   }
+
+  const Rocket = () => {
+    return (
+     <div className="rocket">🚀</div>
+    );
+  };
   
   return (
-    <main className='board'>
-      <h1>Tic Tac Toe</h1>
-      <section className='game'>
-        {
-          board.map((_, index) => {
-            return (
-              <Square key = {index} index={index} updateboard={updateBoard} >
-                {board[index]}
-              </Square>
-            )
-          })
-        }
-      </section>
+    <div className="grid-layout"> 
+      <div>
+        <Rocket />
+      </div>
+      <main className='board'>
+        <h1>Tic Tac Toe</h1>
+        <section className='game'>
+          {
+            board.map((_, index) => {
+              return (
+                <Square key = {index} index={index} updateboard={updateBoard} >
+                  {board[index]}
+                </Square>
+              )
+            })
+          }
+        </section>
 
-      <section className='turn'>
-        <Square isSelected={turn === TURNS.X}> {TURNS.X}</Square>
-        <Square isSelected = {turn === TURNS.O}> {TURNS.O}</Square>
-      </section>  
-      <ResetGame />
-    </main>    
-      
+        <section className='turn'>
+          <Square isSelected={turn === TURNS.X}> {TURNS.X}</Square>
+          <Square isSelected = {turn === TURNS.O}> {TURNS.O}</Square>
+        </section>  
+        <ResetGame/>
+      </main>   
+      <div>
+        <Rocket />
+      </div> 
+  </div>  
      
   )
 }

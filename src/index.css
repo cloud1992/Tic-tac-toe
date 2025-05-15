@@ -87,13 +87,12 @@ body {
 }
 
 .winner {
-  position: absolute;
-  width: 100vw;
-  height: 100vh;
-  top: 0;
-  left: 0;
+  position: relative;
+  width: 100%;
+  height: 100%;
   display: grid;
-  place-items: center;
+  justify-content: center;
+  align-items: center;
   background-color: rgba(0, 0, 0, 0.7);
 }
 
@@ -129,3 +128,35 @@ body {
   font-size: 48px;
 }
 
+.grid-layout {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  justify-items: center;
+  min-height: 100vh;
+  background: #050505; /* opcional, fondo oscuro para ver el cohete */
+  position: relative;
+  overflow: hidden;
+}
+
+.rocket {
+  font-size: 5rem;
+  animation: floatUp 3s linear infinite;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
