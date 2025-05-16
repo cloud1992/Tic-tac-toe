@@ -41,22 +41,22 @@ function App() {
   const [winner, setWinner] = useState(null);
   const [showWinnerEffect, setShowWinnerEffect] = useState(false);
 
-  useEffect(() => {
-  if (winner) {
-    confetti({
-      particleCount: 150,
-      spread: 70,
-      origin: { y: 0.6 }
-    });
+    useEffect(() => {
+      if (winner) {
+        confetti({
+          particleCount: 150,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
 
-    setShowWinnerEffect(true);
-    const timeout = setTimeout(() => {
-      setShowWinnerEffect(false);
-    }, 3000);
+        setShowWinnerEffect(true);
+        const timeout = setTimeout(() => {
+          setShowWinnerEffect(false);
+        }, 3000);
 
-    return () => clearTimeout(timeout);
-  }
-}, [winner]);
+        return () => clearTimeout(timeout);
+      }
+    }, [winner]);
 
 
 
@@ -68,6 +68,10 @@ function App() {
       }
     }
     return null;
+  }
+
+  const checkEndGame = (newBoard) => {
+    return newBoard.every((square) => square !== null);
   }
 
   const updateBoard = (index) => {
@@ -83,6 +87,11 @@ function App() {
     if (newWinner) {
       setWinner(newWinner);
       return;
+    } else if (checkEndGame(newBoard)) {
+      setWinner(false);
+      console.log('draw');
+      return;
+
     }
     // update the turn
     const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X;
@@ -90,30 +99,41 @@ function App() {
   }
 
   const ResetGame = () => {
-    if (winner) {
-    return (
-      <section className='winner'>
-        <div className='text'>
-          <h2>{winner} has won!</h2>
-          <button onClick={() => {
-          setBoard(Array(9).fill(null));
-          setTurn(TURNS.X);
-          setWinner(null);
-          }}>
-          Reset</button> 
-        </div>
-      </section>  
-        
-    )
-  }
+  if (winner === TURNS.X || winner === TURNS.O) {
+    return <ResetGameComp message={`${winner} has won!`} />
+  } else if (winner === false) {
+    return <ResetGameComp message="It's a draw!" />
   }
 
-  const Rocket = () => {
+  return null; // si no hay ganador aún
+  }
+
+  const ResetGameComp = ({ message }) => {
     return (
-     <div className="rocket">🚀</div>
+      <section className="winner">
+        <div className="text">
+          <h2>{message}</h2>
+          <button
+            onClick={() => {
+              setBoard(Array(9).fill(null));
+              setTurn(TURNS.X);
+              setWinner(null);
+            }}
+          >
+            Reset
+          </button>
+        </div>
+      </section>
     );
   };
-  
+
+
+const Rocket = () => {
+  return (
+    <div className="rocket">🚀</div>
+  );
+};
+
   return (
     <div className="grid-layout"> 
       <div>
