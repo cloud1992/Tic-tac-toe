@@ -6,14 +6,24 @@ import {ResetGame} from './components/ResetGame.jsx';
 import { Square } from './components/Square.jsx';
 import { TURNS } from './constants.js';
 import { checkWinner, checkEndGame } from './board.js';
+import { saveGameToStorage, resetGameStorage } from './storage/index.js';
 
 
 function App() {
 
-  const [board, setBoard] = useState(Array(9).fill(null));
-  const [turn, setTurn] = useState(TURNS.X);
+  const [board, setBoard] = useState(() => {
+    const boardFromStorage = window.localStorage.getItem('board');
+    return boardFromStorage ? JSON.parse(boardFromStorage) : Array(9).fill(null);
+  });
+  const [turn, setTurn] = useState(()=> {
+    const turnFromStorage = window.localStorage.getItem('turn');
+    return turnFromStorage ? turnFromStorage : TURNS.X;
+  });
   // null means no winner, false means draw
-  const [winner, setWinner] = useState(null);
+  const [winner, setWinner] = useState(()=> {
+    const winnerFromStorage = window.localStorage.getItem('winner');
+    return winnerFromStorage ? JSON.parse(winnerFromStorage) : null;
+  });
   const [_, setShowWinnerEffect] = useState(false);
 
     useEffect(() => {
@@ -37,6 +47,7 @@ function App() {
     setBoard(Array(9).fill(null));
     setTurn(TURNS.X);
     setWinner(null);
+    resetGameStorage();
   }  
 
   const updateBoard = (index) => {
@@ -47,8 +58,13 @@ function App() {
     const newBoard = [...board];
     newBoard[index] = turn;
     setBoard(newBoard);
+    // update the turn
+    const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X;
+    setTurn(newTurn);
     // check for winner
     const newWinner = checkWinner(newBoard);
+    // save the game in local storage
+    saveGameToStorage(newBoard, newTurn, newWinner);
     if (newWinner) {
       setWinner(newWinner);
       return;
@@ -58,9 +74,7 @@ function App() {
       return;
 
     }
-    // update the turn
-    const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X;
-    setTurn(newTurn);
+   
   }
 
   
@@ -77,6 +91,7 @@ const Rocket = () => {
         <Rocket />
       </div>
       <main className='board'>
+        <button className='reset' onClick={resetGame}> Reset</button>
         <h1>Tic Tac Toe</h1>
         <section className='game'>
           {
