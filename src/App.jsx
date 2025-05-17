@@ -1,37 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 
-import './App.css'
+import './App.css';
+import {ResetGame} from './components/ResetGame.jsx';
+import { Square } from './components/Square.jsx';
+import { TURNS } from './constants.js';
+import { checkWinner, checkEndGame } from './board.js';
 
-const TURNS = {
-  X: 'X',
-  O: 'O'
-}
-
-const Square = ({children, isSelected, updateboard, index}) => {
-  
-  const className = `square ${isSelected ? 'is-selected' : ''}`
-
-  const handleClick = () => {
-    updateboard(index);
-  }
-
-  return (
-    <div className={className} onClick={handleClick}>
-      {children} </div>
-  )
-}
-
-const WINNER_COMBOS = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6]
-];
 
 function App() {
 
@@ -39,7 +14,7 @@ function App() {
   const [turn, setTurn] = useState(TURNS.X);
   // null means no winner, false means draw
   const [winner, setWinner] = useState(null);
-  const [showWinnerEffect, setShowWinnerEffect] = useState(false);
+  const [_, setShowWinnerEffect] = useState(false);
 
     useEffect(() => {
       if (winner) {
@@ -58,21 +33,11 @@ function App() {
       }
     }, [winner]);
 
-
-
-  const checkWinner = (boardToCheck) => {
-    for (const combo of WINNER_COMBOS) {
-      const [a, b, c] = combo;
-      if (boardToCheck[a] && boardToCheck[a] === boardToCheck[b] && boardToCheck[a] === boardToCheck[c]) {
-        return boardToCheck[a];
-      }
-    }
-    return null;
-  }
-
-  const checkEndGame = (newBoard) => {
-    return newBoard.every((square) => square !== null);
-  }
+  const resetGame = () => {
+    setBoard(Array(9).fill(null));
+    setTurn(TURNS.X);
+    setWinner(null);
+  }  
 
   const updateBoard = (index) => {
     // if the square is already filled, return
@@ -98,35 +63,7 @@ function App() {
     setTurn(newTurn);
   }
 
-  const ResetGame = () => {
-  if (winner === TURNS.X || winner === TURNS.O) {
-    return <ResetGameComp message={`${winner} has won!`} />
-  } else if (winner === false) {
-    return <ResetGameComp message="It's a draw!" />
-  }
-
-  return null; // si no hay ganador aún
-  }
-
-  const ResetGameComp = ({ message }) => {
-    return (
-      <section className="winner">
-        <div className="text">
-          <h2>{message}</h2>
-          <button
-            onClick={() => {
-              setBoard(Array(9).fill(null));
-              setTurn(TURNS.X);
-              setWinner(null);
-            }}
-          >
-            Reset
-          </button>
-        </div>
-      </section>
-    );
-  };
-
+  
 
 const Rocket = () => {
   return (
@@ -157,7 +94,7 @@ const Rocket = () => {
           <Square isSelected={turn === TURNS.X}> {TURNS.X}</Square>
           <Square isSelected = {turn === TURNS.O}> {TURNS.O}</Square>
         </section>  
-        <ResetGame/>
+        <ResetGame winner={winner} resetGame={resetGame}/>
       </main>   
       <div>
         <Rocket />
