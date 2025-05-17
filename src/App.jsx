@@ -24,7 +24,6 @@ function App() {
     const winnerFromStorage = window.localStorage.getItem('winner');
     return winnerFromStorage ? JSON.parse(winnerFromStorage) : null;
   });
-  const [_, setShowWinnerEffect] = useState(false);
 
     useEffect(() => {
       if (winner) {
@@ -33,14 +32,8 @@ function App() {
           spread: 70,
           origin: { y: 0.6 }
         });
-
-        setShowWinnerEffect(true);
-        const timeout = setTimeout(() => {
-          setShowWinnerEffect(false);
-        }, 3000);
-
-        return () => clearTimeout(timeout);
       }
+       
     }, [winner]);
 
   const resetGame = () => {
